@@ -1,20 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+// src/app/pages/list/list.page.ts
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonicModule } from '@ionic/angular';
+import { MockDataService } from '../../services/mock-data.service';
+import { Item } from '../../models/item.model';
 
 @Component({
   selector: 'app-list',
   templateUrl: './list.page.html',
   styleUrls: ['./list.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [CommonModule, IonicModule]
 })
-export class ListPage implements OnInit {
+export class ListPage {
+  items: Item[] = [];
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor(private mockData: MockDataService) {
+    this.items = this.mockData.getAllItems();
+    console.log('Mock数据加载:', this.items); // 控制台验证
   }
-
 }

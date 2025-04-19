@@ -4,7 +4,8 @@ import {
   IonTabBar, 
   IonTabButton, 
   IonIcon, 
-  IonLabel 
+  IonLabel,
+  IonRouterOutlet 
 } from '@ionic/angular/standalone';
 import { 
   listOutline, 
@@ -18,12 +19,19 @@ import { addIcons } from 'ionicons';
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss'],
-  standalone: true,  // 必须添加此项
-  imports: [IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel]
+  standalone: true,
+  imports: [
+    IonTabs, 
+    IonTabBar, 
+    IonTabButton, 
+    IonIcon, 
+    IonLabel,
+    IonRouterOutlet  // 必须导入
+  ]
 })
 export class TabsPage {
   constructor() {
-    // 注册我们实际需要的图标
+    // 注册图标
     addIcons({ 
       listOutline,
       addCircleOutline,

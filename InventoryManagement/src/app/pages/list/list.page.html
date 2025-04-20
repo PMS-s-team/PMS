@@ -1,22 +1,59 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>库存清单</ion-title>
-    <ion-searchbar placeholder="按名称搜索" [(ngModel)]="searchQuery" (ionChange)="debouncedSearch()"></ion-searchbar>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar 
+      [(ngModel)]="searchTerm" 
+      placeholder="搜索商品名称"
+      debounce="300"
+      (ionInput)="searchSubject.next(searchTerm)">
+    </ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item *ngFor="let item of filteredItems">
-      <ion-label>
-        <h2>{{ item.name }}</h2>
-        <p>类别: {{ item.category }} | 库存: {{ item.quantity }}</p>
-        <p>状态: {{ item.stockStatus }} | 价格: ${{ item.price }}</p>
-      </ion-label>
-      <ion-note slot="end" *ngIf="item.featuredItem === 1">⭐ 特色</ion-note>
-    </ion-item>
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div *ngIf="isLoading" class="loading-wrapper">
+    <ion-spinner name="crescent"></ion-spinner>
+  </div>
+
+  <div *ngIf="!isLoading && filteredItems.length === 0" class="empty-state">
+    <ion-text color="medium">
+      {{ searchTerm ? '未找到匹配商品' : '暂无库存数据' }}
+    </ion-text>
+  </div>
+
+  <ion-list *ngIf="!isLoading && filteredItems.length > 0">
+    <ion-item-sliding *ngFor="let item of filteredItems; trackBy: trackById">
+      <ion-item>
+        <ion-label>
+          <h2>{{ item.name || '未命名商品' }}</h2>
+          <p>
+            类别: {{ item.category || '未分类' }} | 
+            库存: {{ item.quantity ?? 'N/A' }} | 
+            状态: <span [class]="getStatusClass(item.stockStatus)">
+              {{ item.stockStatus || '未知状态' }}
+            </span>
+          </p>
+          <p>供应商: {{ item.supplierName || '未知供应商' }}</p>
+          <ion-badge *ngIf="item.featuredItem === 1" color="warning" slot="end">
+            ⭐ 特色
+          </ion-badge>
+        </ion-label>
+      </ion-item>
+
+      <ion-item-options side="end">
+        <ion-item-option 
+          color="danger" 
+          (click)="confirmDelete(item.name)"
+          [disabled]="!item.name">
+          删除
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
   </ion-list>
-  <ion-item *ngIf="filteredItems.length === 0 && searchQuery">
-    <ion-label>未找到相关商品，请尝试其他关键词。</ion-label>
-  </ion-item>
 </ion-content>

@@ -63,7 +63,7 @@ import { Subject, debounceTime } from 'rxjs';
               <h2>{{ item.name || '未命名商品' }}</h2>
               <p>
                 类别: {{ item.category || '未分类' }} | 
-                库存: {{ item.quantity ?? 'N/A' }} | 
+                库存: {{ item.quantity || 'N/A' }} | 
                 状态: <span [class]="getStatusClass(item.stockStatus)">
                   {{ item.stockStatus || '未知状态' }}
                 </span>
@@ -133,7 +133,7 @@ export class ListPage {
   // 初始化数据
   private initializeData() {
     console.log('--- 初始化数据加载 ---');
-    this.api.setMockMode(false);
+    this.api.setMockMode(true);
     this.loadData();
     
     // 测试删除保护
@@ -144,7 +144,7 @@ export class ListPage {
 
   // 更安全的过滤方法
   get filteredItems(): Item[] {
-    return this.items.filter(item => {
+    const filtered = this.items.filter(item => {
       try {
         const itemName = item?.name?.toString() || '';
         const searchTerm = this.searchTerm?.toString() || '';
@@ -154,6 +154,8 @@ export class ListPage {
         return false;
       }
     });
+    console.log('Filtered items:', filtered); // 检查过滤结果
+    return filtered;
   }
 
   // 防抖搜索
@@ -161,8 +163,15 @@ export class ListPage {
     this.searchSubject.pipe(
       debounceTime(300)
     ).subscribe(() => {
-      console.log('搜索:', this.searchTerm);
+      console.log('搜索触发:', this.searchTerm); // 检查搜索逻辑是否被触发
+      this.performSearch();
     });
+  }
+
+  // 执行搜索操作
+  private performSearch() {
+    // 这里可以添加更多的搜索逻辑
+    console.log('执行搜索:', this.searchTerm);
   }
 
   // 跟踪函数优化性能
@@ -182,6 +191,7 @@ export class ListPage {
     try {
       const data = await this.api.getAllItems().toPromise();
       this.items = Array.isArray(data) ? data : [];
+      console.log('Loaded items:', this.items); // 检查数据是否正确加载
     } catch (err) {
       console.error('数据加载失败:', err);
       this.items = [];

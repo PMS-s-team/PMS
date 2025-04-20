@@ -11,7 +11,7 @@
     </ion-toolbar>
   </ion-header>
 
-  <form (ngSubmit)="onSubmit()" #addForm="ngForm">
+  <form (ngSubmit)="onSubmit(addForm)" #addForm="ngForm">
     <ion-item>
       <ion-label position="floating">商品名称</ion-label>
       <ion-input type="text" name="name" [(ngModel)]="newItem.name" required></ion-input>
@@ -54,7 +54,7 @@
 
     <ion-item>
       <ion-label position="floating">是否为特色商品</ion-label>
-      <ion-checkbox name="featuredItem" [(ngModel)]="newItem.featuredItem"></ion-checkbox>
+      <ion-checkbox name="featuredItem" [(ngModel)]="newItem.featuredItem" [checked]="newItem.featuredItem === 1"></ion-checkbox>
     </ion-item>
 
     <ion-item>
@@ -63,5 +63,6 @@
     </ion-item>
 
     <ion-button expand="full" type="submit" [disabled]="!addForm.form.valid">提交</ion-button>
+    <ion-button expand="full" type="button" color="medium" (click)="resetForm(addForm)">重置</ion-button>
   </form>
 </ion-content>

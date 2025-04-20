@@ -9,6 +9,14 @@
       debounce="300"
       (ionInput)="searchSubject.next(searchTerm)">
     </ion-searchbar>
+    <ion-item lines="none" class="featured-toggle">
+      <ion-label>仅显示特色商品</ion-label>
+      <ion-toggle 
+        [(ngModel)]="showFeaturedOnly" 
+        (ionChange)="toggleFeaturedFilter()" 
+        slot="end">
+      </ion-toggle>
+    </ion-item>
   </ion-toolbar>
 </ion-header>
 

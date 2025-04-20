@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonLabel, IonInput, IonSelect, IonSelectOption, IonButton, IonCheckbox, IonTextarea } from '@ionic/angular/standalone';
+import { 
+  IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonLabel, 
+  IonInput, IonSelect, IonSelectOption, IonButton, IonCheckbox, 
+  IonTextarea 
+} from '@ionic/angular/standalone';
 import { ApiService } from '../../services/api.service';
 import { Item, Category, StockStatus } from '../../models/item.model';
 import { ToastController } from '@ionic/angular';
@@ -11,7 +15,11 @@ import { ToastController } from '@ionic/angular';
   templateUrl: './add.page.html',
   styleUrls: ['./add.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonLabel, IonInput, IonSelect, IonSelectOption, IonButton, IonCheckbox, IonTextarea, CommonModule, FormsModule]
+  imports: [
+    IonContent, IonHeader, IonTitle, IonToolbar, IonItem, IonLabel, 
+    IonInput, IonSelect, IonSelectOption, IonButton, IonCheckbox, 
+    IonTextarea, CommonModule, FormsModule
+  ]
 })
 export class AddPage implements OnInit {
   // 初始化新商品对象，使用默认值
@@ -26,14 +34,14 @@ export class AddPage implements OnInit {
     specialNote: ''
   };
 
-  constructor(private api: ApiService, private toastCtrl: ToastController) { }
+  constructor(private api: ApiService, private toastCtrl: ToastController) {}
 
   ngOnInit() {
     // 初始化逻辑可以在这里添加
   }
 
   // 表单提交方法
-  async onSubmit() {
+  async onSubmit(form: NgForm) {
     // 简单的客户端表单验证
     if (!this.newItem.name || this.newItem.quantity < 0 || this.newItem.price < 0) {
       const toast = await this.toastCtrl.create({
@@ -63,7 +71,7 @@ export class AddPage implements OnInit {
       await toast.present();
 
       // 重置表单
-      this.resetForm();
+      this.resetForm(form);
     } catch (err) {
       // 打印错误信息以便调试
       console.error('添加商品时出错:', err);
@@ -78,7 +86,8 @@ export class AddPage implements OnInit {
   }
 
   // 重置表单方法
-  resetForm() {
+  resetForm(form: NgForm) {
+    form.resetForm();
     this.newItem = {
       name: '',
       category: Category.Electronics,

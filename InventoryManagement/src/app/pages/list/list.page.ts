@@ -5,7 +5,7 @@ import {
   IonContent, IonList, IonItemSliding, IonItem,
   IonItemOptions, IonItemOption, IonRefresher,
   IonRefresherContent, IonSpinner, IonText, IonLabel,
-  IonBadge
+  IonBadge, IonToggle
 } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
@@ -24,7 +24,7 @@ import { Subject, debounceTime } from 'rxjs';
     IonContent, IonList, IonItemSliding, IonItem,
     IonItemOptions, IonItemOption, IonRefresher,
     IonRefresherContent, IonSpinner, IonText, IonLabel,
-    IonBadge
+    IonBadge, IonToggle
   ],
   template: `
     <ion-header>
@@ -38,6 +38,10 @@ import { Subject, debounceTime } from 'rxjs';
           debounce="300"
           (ionInput)="searchSubject.next(searchTerm)">
         </ion-searchbar>
+        <ion-item lines="none">
+          <ion-label>仅显示特色商品</ion-label>
+          <ion-toggle [(ngModel)]="showFeaturedOnly" (ionChange)="toggleFeaturedFilter()" slot="end"></ion-toggle>
+        </ion-item>
       </ion-toolbar>
     </ion-header>
 
@@ -132,6 +136,7 @@ export class ListPage {
   searchTerm = '';
   isLoading = false;
   searchSubject = new Subject<string>();
+  showFeaturedOnly: boolean = false; // 是否仅显示特色商品
 
   constructor(
     private api: ApiService,
@@ -145,10 +150,6 @@ export class ListPage {
     console.log('--- 初始化数据加载 ---');
     this.api.setMockMode(true);
     this.loadData();
-    
-    this.api.deleteItem('Laptop').subscribe({
-      error: (err) => console.log('防删测试:', err.message)
-    });
   }
 
   get filteredItems(): Item[] {
@@ -156,7 +157,9 @@ export class ListPage {
       try {
         const itemName = item?.name?.toString() || '';
         const searchTerm = this.searchTerm?.toString() || '';
-        return itemName.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesSearch = itemName.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesFeatured = this.showFeaturedOnly ? item.featuredItem === 1 : true;
+        return matchesSearch && matchesFeatured;
       } catch (e) {
         console.warn('过滤出错:', e);
         return false;
@@ -164,6 +167,11 @@ export class ListPage {
     });
     console.log('Filtered items:', filtered);
     return filtered;
+  }
+
+  toggleFeaturedFilter() {
+    this.showFeaturedOnly = !this.showFeaturedOnly;
+    console.log('特色商品筛选状态:', this.showFeaturedOnly);
   }
 
   private setupSearchDebounce() {
@@ -207,6 +215,12 @@ export class ListPage {
   async confirmDelete(name: string) {
     if (!name) {
       this.showError('无效的商品名称');
+      return;
+    }
+
+    // 防止删除 Laptop 商品
+    if (name.toLowerCase() === 'laptop') {
+      this.showError('禁止删除 Laptop 商品');
       return;
     }
 

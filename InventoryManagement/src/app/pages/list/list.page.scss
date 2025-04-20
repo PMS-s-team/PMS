@@ -1,0 +1,20 @@
+/* filepath: d:\HuaweiMoveData\Users\86189\Desktop\PMS\InventoryManagement\src\app\pages\list\list.page.scss */
+.featured-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  /* filepath: d:\HuaweiMoveData\Users\86189\Desktop\PMS\InventoryManagement\src\app\pages\list\list.page.scss */
+ion-item-sliding {
+    --background: var(--ion-background-color);
+  }
+  
+  ion-item-options {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  ion-item-option {
+    font-size: 16px;
+    padding: 10px;
+  }

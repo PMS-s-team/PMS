@@ -5,3 +5,7 @@ form {
   ion-button {
     margin-top: 16px;
   }
+  ion-button {
+    color: var(--ion-color-primary);
+    --background: transparent;
+  }

@@ -21,4 +21,5 @@ export const routes: Routes = [
     path: 'privacy',
     loadComponent: () => import('./pages/privacy/privacy.page').then(m => m.PrivacyPage)
   },
+  
 ];

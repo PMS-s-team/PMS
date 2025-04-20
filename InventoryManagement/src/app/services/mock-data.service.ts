@@ -8,7 +8,7 @@ import { Item, Category, StockStatus } from '../models/item.model';
 export class MockDataService {
   private readonly mockItems: Item[] = [
     {
-      id: 1,
+      id: '1',
       name: 'Laptop',
       category: Category.Electronics,
       quantity: 15,
@@ -19,7 +19,7 @@ export class MockDataService {
       specialNote: '2023新款'
     },
     {
-      id: 2,
+      id: '2',
       name: 'Office Chair',
       category: Category.Furniture,
       quantity: 8,
@@ -28,7 +28,7 @@ export class MockDataService {
       stockStatus: StockStatus.LowStock
     },
     {
-      id: 3,
+      id: '3',
       name: 'T-Shirt',
       category: Category.Clothing,
       quantity: 0,
@@ -38,7 +38,7 @@ export class MockDataService {
       specialNote: '夏季促销款'
     },
     {
-      id: 4,
+      id: '4',
       name: 'Drill',
       category: Category.Tools,
       quantity: 12,
@@ -47,7 +47,7 @@ export class MockDataService {
       stockStatus: StockStatus.InStock
     },
     {
-      id: 5,
+      id: '5',
       name: 'Desk Lamp',
       category: Category.Miscellaneous,
       quantity: 23,
@@ -64,5 +64,31 @@ export class MockDataService {
 
   getItemByName(name: string): Item | undefined {
     return this.mockItems.find(item => item.name.toLowerCase() === name.toLowerCase());
+  }
+
+  getItemById(id: string): Item | undefined {
+    return this.mockItems.find(item => item.id === id);
+  }
+
+  updateItemByName(name: string, updates: Partial<Item>): Item | undefined {
+    const existing = this.mockItems.find(item => item.name.toLowerCase() === name.toLowerCase());
+    if (!existing) {
+      return undefined;
+    }
+    const updatedItem = { ...existing, ...updates };
+    const index = this.mockItems.indexOf(existing);
+    if (index !== -1) {
+      this.mockItems[index] = updatedItem;
+    }
+    return updatedItem;
+  }
+
+  deleteItemByName(name: string): boolean {
+    const index = this.mockItems.findIndex(item => item.name.toLowerCase() === name.toLowerCase());
+    if (index !== -1) {
+      this.mockItems.splice(index, 1);
+      return true;
+    }
+    return false;
   }
 }

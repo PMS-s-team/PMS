@@ -14,15 +14,15 @@ export enum StockStatus {
   OutOfStock = 'Out of Stock'
 }
 
-// 定义商品接口
+// src/app/models/item.model.ts
 export interface Item {
-  id: number;           // 唯一标识，自动递增
-  name: string;         // 商品名称，必填且唯一
-  category: Category;   // 商品类别
-  quantity: number;     // 库存数量，必填（整数）
-  price: number;        // 商品价格，必填（整数）
-  supplierName: string; // 供应商名称，必填
-  stockStatus: StockStatus; // 库存状态
-  featuredItem?: number; // 是否为特色商品（0=非特色, 1=特色），默认值为0
-  specialNote?: string;  // 特殊备注（可选）
+  id: string; // 商品ID，字符串类型
+  name: string; // 商品名称，字符串类型，必填
+  category: Category; // 类别，枚举类型
+  quantity: number; // 数量，整数类型，必填
+  price: number; // 价格，整数类型，必填
+  supplierName: string; // 供应商名称，字符串类型，必填
+  stockStatus: StockStatus; // 库存状态，枚举类型
+  featuredItem?: number; // 特色商品，整数类型，默认值为0
+  specialNote?: string; // 特别备注，字符串类型，可选
 }

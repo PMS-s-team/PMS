@@ -188,7 +188,7 @@ export class ListPage {
   }
 
   trackById(index: number, item: Item): number {
-    return item.id || index;
+    return typeof item.id === 'string' ? parseInt(item.id, 10) : (item.id || index);
   }
 
   getStatusClass(status?: string): string {

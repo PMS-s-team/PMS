@@ -1,3 +1,4 @@
+// src/app/services/api.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, throwError, of, map, tap } from 'rxjs';
@@ -79,31 +80,51 @@ export class ApiService {
   }
 
   /**
-   * 添加新商品
-   * @param item 不包含id的商品信息
-   * @returns 添加后的商品信息（包含生成的id）
+   * 按ID查询商品
+   * @param id 商品ID
+   * @returns 商品信息或undefined的可观察对象
    */
-  addItem(item: Omit<Item, 'id'>): Observable<Item> {
-    if (!item.name?.trim()) {
-      return throwError(() => new Error('商品名称不能为空'));
+  getItemById(id: string): Observable<Item | undefined> {
+    if (!id?.trim()) {
+      return throwError(() => new Error('商品ID不能为空'));
     }
 
-    if (this.useMock) {
-      const newItem: Item = {
-        ...item,
-        id: Date.now(),
-        featuredItem: item.featuredItem || 0  // 默认值处理
-      };
-      return of(newItem).pipe(
-        tap(() => console.log('Mock add item:', newItem))
-      );
-    }
+    return this.useMock
+      ? of(this.mockData.getItemById(id)).pipe(
+          tap(found => console.log('Mock search for:', id, 'Found:', !!found))
+        )
+      : this.http.get<Item>(`${this.baseUrl}/${encodeURIComponent(id)}`, this.httpOptions).pipe(
+          catchError(this.handleError),
+          tap(item => console.log('Found item:', item))
+        );
+  }
 
-    return this.http.post<Item>(`${this.baseUrl}/`, item, this.httpOptions).pipe(
-      catchError(this.handleError),
-      tap(addedItem => console.log('Added item:', addedItem))
+/**
+ * 添加新商品
+ * @param item 不包含id的商品信息
+ * @returns 添加后的商品信息（包含生成的id）
+ */
+addItem(item: Omit<Item, 'id'>): Observable<Item> {
+  if (!item.name?.trim()) {
+    return throwError(() => new Error('商品名称不能为空'));
+  }
+
+  if (this.useMock) {
+    const newItem: Item = {
+      ...item,
+      id: String(Date.now()), // 修复：将 number 转换为 string
+      featuredItem: item.featuredItem || 0  // 默认值处理
+    };
+    return of(newItem).pipe(
+      tap(() => console.log('Mock add item:', newItem))
     );
   }
+
+  return this.http.post<Item>(`${this.baseUrl}/`, item, this.httpOptions).pipe(
+    catchError(this.handleError),
+    tap(addedItem => console.log('Added item:', addedItem))
+  );
+}
 
   /**
    * 更新商品信息
@@ -117,11 +138,10 @@ export class ApiService {
     }
 
     if (this.useMock) {
-      const existing = this.mockData.getItemByName(name);
-      if (!existing) {
+      const updated = this.mockData.updateItemByName(name, updates);
+      if (!updated) {
         return throwError(() => new Error('找不到要更新的商品'));
       }
-      const updated = { ...existing, ...updates };
       return of(updated).pipe(
         tap(() => console.log('Mock update:', updated))
       );
@@ -152,6 +172,10 @@ export class ApiService {
     }
 
     if (this.useMock) {
+      const deleted = this.mockData.deleteItemByName(name);
+      if (!deleted) {
+        return throwError(() => new Error('找不到要删除的商品'));
+      }
       return of({ message: `模拟删除成功: ${name}` }).pipe(
         tap(() => console.log('Mock delete:', name))
       );

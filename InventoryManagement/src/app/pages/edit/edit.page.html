@@ -1,13 +1,64 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>edit</ion-title>
+    <ion-title>编辑商品</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">edit</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+    <ion-item>
+      <ion-label position="stacked">商品名称</ion-label>
+      <ion-input formControlName="name" type="text"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">分类</ion-label>
+      <ion-select formControlName="category">
+        <ion-select-option value="Electronics">电子产品</ion-select-option>
+        <ion-select-option value="Furniture">家具</ion-select-option>
+        <ion-select-option value="Clothing">服装</ion-select-option>
+        <ion-select-option value="Tools">工具</ion-select-option>
+        <ion-select-option value="Miscellaneous">其他</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">库存数量</ion-label>
+      <ion-input formControlName="quantity" type="number"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">价格</ion-label>
+      <ion-input formControlName="price" type="number"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">供应商</ion-label>
+      <ion-input formControlName="supplier" type="text"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">库存状态</ion-label>
+      <ion-select formControlName="stockStatus">
+        <ion-select-option value="In Stock">有库存</ion-select-option>
+        <ion-select-option value="Low Stock">库存不足</ion-select-option>
+        <ion-select-option value="Out of Stock">无库存</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">是否为特色商品</ion-label>
+      <ion-toggle formControlName="featured"></ion-toggle>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">备注</ion-label>
+      <ion-textarea formControlName="specialNote"></ion-textarea>
+    </ion-item>
+
+    <ion-button expand="block" type="submit">保存更改</ion-button>
+  </form>
 </ion-content>

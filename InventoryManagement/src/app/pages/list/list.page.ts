@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { Item } from '../../models/item.model';
 import { ToastController } from '@ionic/angular/standalone';
+import { Subject, debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-list',
@@ -35,7 +36,7 @@ import { ToastController } from '@ionic/angular/standalone';
           [(ngModel)]="searchTerm" 
           placeholder="搜索商品名称"
           debounce="300"
-          (ionInput)="handleSearchInput()">
+          (ionInput)="searchSubject.next(searchTerm)">
         </ion-searchbar>
       </ion-toolbar>
     </ion-header>
@@ -119,13 +120,14 @@ export class ListPage {
   items: Item[] = [];
   searchTerm = '';
   isLoading = false;
-  private searchDebounceTimer: any;
+  searchSubject = new Subject<string>();
 
   constructor(
     private api: ApiService,
     private toastCtrl: ToastController
   ) {
     this.initializeData();
+    this.setupSearchDebounce();
   }
 
   // 初始化数据
@@ -155,11 +157,12 @@ export class ListPage {
   }
 
   // 防抖搜索
-  handleSearchInput() {
-    clearTimeout(this.searchDebounceTimer);
-    this.searchDebounceTimer = setTimeout(() => {
+  private setupSearchDebounce() {
+    this.searchSubject.pipe(
+      debounceTime(300)
+    ).subscribe(() => {
       console.log('搜索:', this.searchTerm);
-    }, 300);
+    });
   }
 
   // 跟踪函数优化性能

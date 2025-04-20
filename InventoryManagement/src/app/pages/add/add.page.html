@@ -1,13 +1,67 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>add</ion-title>
+    <ion-title>添加商品</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">add</ion-title>
+      <ion-title size="large">添加商品</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <form (ngSubmit)="onSubmit()" #addForm="ngForm">
+    <ion-item>
+      <ion-label position="floating">商品名称</ion-label>
+      <ion-input type="text" name="name" [(ngModel)]="newItem.name" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">商品类别</ion-label>
+      <ion-select name="category" [(ngModel)]="newItem.category" required>
+        <ion-select-option value="Electronics">电子产品</ion-select-option>
+        <ion-select-option value="Furniture">家具</ion-select-option>
+        <ion-select-option value="Clothing">服装</ion-select-option>
+        <ion-select-option value="Tools">工具</ion-select-option>
+        <ion-select-option value="Miscellaneous">其他</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">库存数量</ion-label>
+      <ion-input type="number" name="quantity" [(ngModel)]="newItem.quantity" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">价格</ion-label>
+      <ion-input type="number" name="price" [(ngModel)]="newItem.price" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">供应商名称</ion-label>
+      <ion-input type="text" name="supplierName" [(ngModel)]="newItem.supplierName" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">库存状态</ion-label>
+      <ion-select name="stockStatus" [(ngModel)]="newItem.stockStatus" required>
+        <ion-select-option value="InStock">有库存</ion-select-option>
+        <ion-select-option value="LowStock">库存不足</ion-select-option>
+        <ion-select-option value="OutOfStock">无库存</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">是否为特色商品</ion-label>
+      <ion-checkbox name="featuredItem" [(ngModel)]="newItem.featuredItem"></ion-checkbox>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">特殊备注</ion-label>
+      <ion-textarea name="specialNote" [(ngModel)]="newItem.specialNote"></ion-textarea>
+    </ion-item>
+
+    <ion-button expand="full" type="submit" [disabled]="!addForm.form.valid">提交</ion-button>
+  </form>
 </ion-content>

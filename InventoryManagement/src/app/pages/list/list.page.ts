@@ -88,6 +88,17 @@ import { Subject, debounceTime } from 'rxjs';
     </ion-content>
   `,
   styles: [`
+    ion-searchbar {
+      z-index: 10; /* 确保搜索框在最前面 */
+      position: relative;
+    }
+    ion-header {
+      z-index: 5;
+      position: relative;
+    }
+    ion-content {
+      --padding-top: 56px; /* 确保内容不会覆盖 header */
+    }
     .loading-wrapper, .empty-state {
       display: flex;
       justify-content: center;
@@ -130,19 +141,16 @@ export class ListPage {
     this.setupSearchDebounce();
   }
 
-  // 初始化数据
   private initializeData() {
     console.log('--- 初始化数据加载 ---');
     this.api.setMockMode(true);
     this.loadData();
     
-    // 测试删除保护
     this.api.deleteItem('Laptop').subscribe({
       error: (err) => console.log('防删测试:', err.message)
     });
   }
 
-  // 更安全的过滤方法
   get filteredItems(): Item[] {
     const filtered = this.items.filter(item => {
       try {
@@ -154,32 +162,27 @@ export class ListPage {
         return false;
       }
     });
-    console.log('Filtered items:', filtered); // 检查过滤结果
+    console.log('Filtered items:', filtered);
     return filtered;
   }
 
-  // 防抖搜索
   private setupSearchDebounce() {
     this.searchSubject.pipe(
       debounceTime(300)
     ).subscribe(() => {
-      console.log('搜索触发:', this.searchTerm); // 检查搜索逻辑是否被触发
+      console.log('搜索触发:', this.searchTerm);
       this.performSearch();
     });
   }
 
-  // 执行搜索操作
   private performSearch() {
-    // 这里可以添加更多的搜索逻辑
     console.log('执行搜索:', this.searchTerm);
   }
 
-  // 跟踪函数优化性能
   trackById(index: number, item: Item): number {
     return item.id || index;
   }
 
-  // 状态类安全获取
   getStatusClass(status?: string): string {
     if (!status) return 'status-unknown';
     const normalized = status.toLowerCase().replace(/\s+/g, '-');
@@ -191,7 +194,7 @@ export class ListPage {
     try {
       const data = await this.api.getAllItems().toPromise();
       this.items = Array.isArray(data) ? data : [];
-      console.log('Loaded items:', this.items); // 检查数据是否正确加载
+      console.log('Loaded items:', this.items);
     } catch (err) {
       console.error('数据加载失败:', err);
       this.items = [];
